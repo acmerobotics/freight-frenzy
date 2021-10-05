@@ -6,7 +6,7 @@ import com.acmerobotics.robomatic.robot.Subsystem;
 public class Intake extends Subsystem {
 
 
-    public Intake(Robot robot) {
+    public Intake(ACMERobot robot) {
         super("intake");
     }
 
