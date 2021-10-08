@@ -5,11 +5,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class ACMERobot extends Robot {
 
+    public final Intake intake;
+
     public ACMERobot(LinearOpMode opmode) {
         super(opmode);
 
-        registerHub("hub0"); // can't remember what the numbers are check last years code
-        registerHub("hub1");
+        registerHub("Expansion Hub 1");
+        registerHub("Control Hub");
+
+        //Create Subsystems Here
+        intake = new Intake(this);
+
+
+        //Register Subsystems here
+        registerSubsytem(intake);
 
     }
 }
