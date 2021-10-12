@@ -1,11 +1,12 @@
 package com.acmerobotics.frieghtFrenzy.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
 import com.acmerobotics.frieghtFrenzy.vision.CVCamera;
-import com.acmerobotics.frieghtFrenzy.vision.OpenCVTest;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+@Config
 @TeleOp
 public class TestTeleOp extends LinearOpMode {
 
@@ -21,6 +22,7 @@ public class TestTeleOp extends LinearOpMode {
         while (!isStopRequested()){
 
 //            robot.update();
+
         }
     }
 }

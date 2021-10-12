@@ -5,24 +5,39 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.acmerobotics.frieghtFrenzy.vision.pipelines.Detector;
+import com.acmerobotics.frieghtFrenzy.vision.pipelines.FindBlueTape;
+import com.acmerobotics.frieghtFrenzy.vision.pipelines.FindColoredObject;
+import com.acmerobotics.frieghtFrenzy.vision.pipelines.FindRedTape;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
 
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.R;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 public class CVCamera implements CameraBridgeViewBase.CvCameraViewListener2, OpModeManagerNotifier.Notifications {
 
     private CameraBridgeViewBase openCvCameraView;
 
+    private FindRedTape redPipeline = new FindRedTape();
+    private FindBlueTape bluePipeline = new FindBlueTape();
+    private FindColoredObject greenPipeline = new FindColoredObject();
+
     public CVCamera() {
 
         Activity activity = AppUtil.getInstance().getActivity();
+
+        // register this class as a listener so we get information regarding opMode life cycle
+        OpModeManagerImpl.getOpModeManagerOfActivity(activity).registerListener(this);
 
 
         // camera view setUp
@@ -49,8 +64,6 @@ public class CVCamera implements CameraBridgeViewBase.CvCameraViewListener2, OpM
     }
 
 
-
-
     @Override
     public void onCameraViewStarted(int width, int height) {
 
@@ -62,8 +75,16 @@ public class CVCamera implements CameraBridgeViewBase.CvCameraViewListener2, OpM
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        Mat image = inputFrame.rgba();
-        return image;
+
+//        Mat imageRed = inputFrame.rgba().clone();
+//        Mat imageBlue = inputFrame.rgba().clone();
+        Mat imageGreen = inputFrame.rgba();
+
+        // process frame for each detector here
+//        Mat testImage = redPipeline.processImg(imageRed);
+        Mat testImage = greenPipeline.processImg(imageGreen);
+
+        return testImage;
     }
 
     @Override
@@ -79,5 +100,6 @@ public class CVCamera implements CameraBridgeViewBase.CvCameraViewListener2, OpM
     @Override
     public void onOpModePostStop(OpMode opMode) {
         openCvCameraView.disableView();
+        greenPipeline.releaseMat();
     }
 }
