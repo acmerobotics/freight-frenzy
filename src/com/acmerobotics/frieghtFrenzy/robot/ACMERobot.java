@@ -13,7 +13,6 @@ public class ACMERobot extends Robot {
         registerHub("Expansion Hub 1");
         registerHub("Control Hub");
 
-        //s
         //Create Subsystems Here
         intake = new Intake(this);
 
