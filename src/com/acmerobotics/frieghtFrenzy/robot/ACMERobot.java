@@ -8,6 +8,7 @@ public class ACMERobot extends Robot {
     public ACMERobot(LinearOpMode opmode) {
         super(opmode);
 
+        //s
         registerHub("hub0"); // can't remember what the numbers are check last years code
         registerHub("hub1");
 
