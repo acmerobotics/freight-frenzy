@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
-import com.acmerobotics.frieghtFrenzy.vision.CVCamera;
 import com.acmerobotics.frieghtFrenzy.vision.FileProcessing;
 import com.acmerobotics.frieghtFrenzy.vision.LocateOnBarcode;
 import com.acmerobotics.frieghtFrenzy.vision.Webcam;

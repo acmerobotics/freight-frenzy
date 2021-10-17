@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 public class FileProcessing implements OpModeManagerNotifier.Notifications {
 
-
     private FindRedTape redPipeline = new FindRedTape();
     private FindBlueTape bluePipeline = new FindBlueTape();
     private FindColoredObject greenPipeline = new FindColoredObject();
