@@ -13,6 +13,10 @@ public class TestAuto extends LinearOpMode {
 
         waitForStart();
 
+        if (isStopRequested()) {
+            return;
+        }
+
         while(!isStopRequested()){
 
             robot.update();

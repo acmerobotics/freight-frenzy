@@ -19,8 +19,8 @@ import java.util.List;
 public class FindColoredObject extends Detector{
 
     // hue estimate for green
-    public static double lowerHue = 40;
-    public static double lowerSaturation = 100;
+    public static double lowerHue = 30;
+    public static double lowerSaturation = 75; // 100
     public static double lowerValue = 100;
 
     public static double upperHue = 75;
@@ -28,7 +28,8 @@ public class FindColoredObject extends Detector{
     public static double upperValue = 255;
 
     private List<MatOfPoint> contours = new ArrayList<>();
-    private ArrayList<Rect> rects = new ArrayList<>(2);
+    private ArrayList<Rect> rects = new ArrayList<>();
+    private Rect targetRect = new Rect();
 
 
     @Override
@@ -58,19 +59,24 @@ public class FindColoredObject extends Detector{
         // fit rectangles around contours
         for (MatOfPoint contour: contours){
             Rect rect = Imgproc.boundingRect(contour);
-            Imgproc.rectangle(rawImg, rect, new Scalar(0, 255, 0));
+            rects.add(rect);
+            Imgproc.rectangle(rawImg, rect, new Scalar(0, 0, 255));
         }
 
-        // find target object
+        Log.i("CV:", rects.toString());
 
-        // do something with the bounding rect obj
+        // find target object
+        for (Rect rect: rects){
+            if (rect.area() > targetRect.area()){
+                targetRect = rect;
+            }
+        }
 
         return rawImg;
     }
 
-    @Override
-    public void findObject() {
-
+    public int getCoordinate() {
+        return targetRect.x;
     }
 
     @Override

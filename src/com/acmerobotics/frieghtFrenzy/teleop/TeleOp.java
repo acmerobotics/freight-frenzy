@@ -1,5 +1,7 @@
 package com.acmerobotics.frieghtFrenzy.teleop;
 
+import android.util.Log;
+
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -14,6 +16,11 @@ public class TeleOp extends LinearOpMode {
         ACMERobot robot = new ACMERobot(this);
 
         waitForStart();
+
+        // prevents error that occurs after quickly hitting stop after start
+        if (isStopRequested()) {
+            return;
+        }
 
         while (!isStopRequested()){
 

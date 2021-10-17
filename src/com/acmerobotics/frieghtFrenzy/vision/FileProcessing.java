@@ -17,6 +17,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class FileProcessing implements OpModeManagerNotifier.Notifications {
 
@@ -25,9 +26,13 @@ public class FileProcessing implements OpModeManagerNotifier.Notifications {
     private FindBlueTape bluePipeline = new FindBlueTape();
     private FindColoredObject greenPipeline = new FindColoredObject();
 
-    private String captureDirectory = AppUtil.FIRST_FOLDER + "/visionTest";
+    String color;
 
-    public FileProcessing(){
+    private File captureDirectory = AppUtil.ROBOT_DATA_DIR;
+
+    public FileProcessing(String color){
+
+        this.color = color;
 
         Activity activity = AppUtil.getInstance().getActivity();
 
@@ -45,24 +50,58 @@ public class FileProcessing implements OpModeManagerNotifier.Notifications {
 
     public void onCameraFrame(){
         // load img file
-        Mat imageGreen = Imgcodecs.imread(captureDirectory + "/regular.jpg");
+        Mat imageGreen = Imgcodecs.imread(captureDirectory + "/webcam-img.jpg").clone();
+        Mat imageRed = Imgcodecs.imread(captureDirectory + "/webcam-img.jpg").clone();
+        Mat imageBlue = Imgcodecs.imread(captureDirectory + "/webcam-img.jpg").clone();
 
         Log.i("CV:", imageGreen.size().toString());
 
         // convert to rgb
         Imgproc.cvtColor(imageGreen, imageGreen, Imgproc.COLOR_BGR2RGBA);
+        Imgproc.cvtColor(imageRed, imageRed, Imgproc.COLOR_BGR2RGBA);
+        Imgproc.cvtColor(imageBlue, imageBlue, Imgproc.COLOR_BGR2RGBA);
 
-        // process frame for each detector here
-        Mat testImage = greenPipeline.processImg(imageGreen);
+        if (color.equals("RED")) {
+            // process frame for detector
+            Mat modRed = redPipeline.processImg(imageRed);
+
+            // save modified img
+            saveModifiedImg(modRed, "rect-red");
+        }
+        else {
+            // process frame for detector
+            Mat modBlue = bluePipeline.processImg(imageBlue);
+
+            // save modified img
+            saveModifiedImg(modBlue, "rect-blue");
+        }
+
+        // process frame for detector
+        Mat modGreen = greenPipeline.processImg(imageGreen);
 
         // save modified img
-        saveModifiedImg(testImage);
+        saveModifiedImg(modGreen, "rect-green");
     }
 
-    private void saveModifiedImg(Mat img){
+    private void saveModifiedImg(Mat img, String title){
         // save an img in test-images folder
-        Imgcodecs.imwrite(captureDirectory + "/test-img.jpg", img);
+        Imgcodecs.imwrite(captureDirectory + "/" + title + ".jpg", img);
 
+    }
+
+    public ArrayList<Integer> getTapeCoordinates(){
+
+        if (color.equals("RED")){
+            return redPipeline.getCoordinates();
+        }
+        else{
+            return bluePipeline.getCoordinates();
+        }
+
+    }
+
+    public int getObjectCoordinate(){
+        return greenPipeline.getCoordinate();
     }
 
     @Override
@@ -78,5 +117,12 @@ public class FileProcessing implements OpModeManagerNotifier.Notifications {
     @Override
     public void onOpModePostStop(OpMode opMode) {
         greenPipeline.releaseMat();
+
+        if (color.equals("RED")){
+            redPipeline.releaseMat();
+        }
+        else{
+            bluePipeline.releaseMat();
+        }
     }
 }
