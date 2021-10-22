@@ -2,6 +2,7 @@ package com.acmerobotics.frieghtFrenzy.robot;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.robomatic.robot.Subsystem;
+import com.acmerobotics.robomatic.robot.Robot;
 
 public class Intake extends Subsystem {
 
