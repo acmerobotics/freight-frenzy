@@ -60,6 +60,7 @@ public class FileProcessing implements OpModeManagerNotifier.Notifications {
         Imgproc.cvtColor(imageRed, imageRed, Imgproc.COLOR_BGR2RGBA);
         Imgproc.cvtColor(imageBlue, imageBlue, Imgproc.COLOR_BGR2RGBA);
 
+
         if (color.equals("RED")) {
             // process frame for detector
             Mat modRed = redPipeline.processImg(imageRed);
