@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.robomatic.hardware.CachingSensor;
 import com.acmerobotics.robomatic.robot.Robot;
 import com.acmerobotics.robomatic.robot.Subsystem;
+import com.acmerobotics.robomatic.util.PIDController;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,6 +23,16 @@ public class Drive extends Subsystem {
 
     private LinearOpMode opMode;
 
+    private double leftJoystickX;
+    private double leftJoystickY;
+
+    private PIDController turnPIDController;
+
+    //Tune these
+    private final double turnP = 0;
+    private final double turnI = 0;
+    private final double turnD = 0;
+
     public Drive(Robot robot, LinearOpMode opMode) {
         super("Drive");
 
@@ -35,6 +46,7 @@ public class Drive extends Subsystem {
             driveMotors[i] = robot.getMotor("Motor" + i);
         }
 
+        turnPIDController = new PIDController(turnP, turnI, turnD);
 
     }
 
@@ -68,12 +80,84 @@ public class Drive extends Subsystem {
 /////////////\\////////\\////////\\///////\\///////////////\\////\\////\\////////////
 //////////////\\////////\\\\\\////\\\\\////\\\\\\///////////\\\\\\\\////\\///////////
 
-    public void setPower() {
+    public void setPower(double left_stick_x, double left_stick_y) {
+
+        //Setting joystick ramping
+            //If power is odd comment the if loop and the contents of the else
+            if (left_stick_x >= 0){
+                leftJoystickX = Math.pow(left_stick_x, 2);
+            } else {
+                leftJoystickX = -Math.pow(left_stick_x, 2);
+            }
+
+            if (left_stick_y >= 0){
+                leftJoystickY = Math.pow(left_stick_y, 2);
+            } else {
+                leftJoystickY = -Math.pow(left_stick_y, 2);
+            }
+
+        //Setting powers
+            //Might have to switch the plus and minus
+            //Left Motors
+            driveMotors[0].setPower(leftJoystickX + leftJoystickY);
+            driveMotors[1].setPower(leftJoystickX + leftJoystickY);
+
+            //Right Motors
+            driveMotors[2].setPower(leftJoystickX - leftJoystickY);
+            driveMotors[3].setPower(leftJoystickX - leftJoystickY);
+
 
 
     }
 
+    public void setSlowModePower(double left_stick_x, double left_stick_y) {
+
+        //Setting joystick ramping
+            //If the exponent is odd comment out the if loop and the contents of the else
+            if (left_stick_x >= 0){
+                leftJoystickX = Math.pow(left_stick_x, 2)/2;
+            } else {
+                leftJoystickX = -Math.pow(left_stick_x, 2)/2;
+            }
+
+            if (left_stick_y >= 0){
+                leftJoystickY = Math.pow(left_stick_y, 2)/2;
+            } else {
+                leftJoystickY = -Math.pow(left_stick_y, 2)/2;
+            }
+
+        //Setting powers
+            //Might have to switch the plus and minus
+            //Left Motors
+            driveMotors[0].setPower(leftJoystickX + leftJoystickY);
+            driveMotors[1].setPower(leftJoystickX + leftJoystickY);
+
+            //Right Motors
+            driveMotors[2].setPower(leftJoystickX - leftJoystickY);
+            driveMotors[3].setPower(leftJoystickX - leftJoystickY);
+
+    }
+
+    //Auto
+
+    public void turnLeft(double angleFromRobot){
 
 
+
+    }
+
+    public void turnRight(double angleFromRobot){
+
+
+
+    }
+
+    public double getRobotAngle(){
+        double currentAngle;
+
+        currentAngle = Double.parseDouble(imuSensor.getValue().toString());
+
+        return currentAngle;
+    }
 
 }
