@@ -30,6 +30,8 @@ public class Drive extends Subsystem {
     private double errorAngle;
     private double error1;
 
+    private double correction;
+
     private PIDController turnPIDController;
     private PIDController headingPIDController;
 
@@ -98,7 +100,12 @@ public class Drive extends Subsystem {
 
                     errorAngle = angleTarget - getRobotAngle();
 
-                    turnPIDController.update(errorAngle);
+                    correction = turnPIDController.update(errorAngle);
+
+                    driveMotors[0].setPower(correction);
+                    driveMotors[1].setPower(correction);
+                    driveMotors[2].setPower(-correction);
+                    driveMotors[3].setPower(-correction);
 
                     break;
 
