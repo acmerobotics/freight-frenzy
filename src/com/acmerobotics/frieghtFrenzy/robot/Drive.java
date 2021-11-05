@@ -26,12 +26,27 @@ public class Drive extends Subsystem {
     private double leftJoystickX;
     private double leftJoystickY;
 
+    private double angleTarget;
+    private double errorAngle;
+    private double error1;
+
+    private double correction;
+
     private PIDController turnPIDController;
+    private PIDController headingPIDController;
 
     //Tune these
     private final double turnP = 0;
     private final double turnI = 0;
     private final double turnD = 0;
+
+    private enum AutoMode{
+        UNKNOWN,
+        TURN,
+        STRAIGHT
+    };
+
+    public AutoMode autoMode;
 
     public Drive(Robot robot, LinearOpMode opMode) {
         super("Drive");
@@ -68,6 +83,46 @@ public class Drive extends Subsystem {
         telemetryData.addData("Motor1 Power ", driveMotors[1].getPower());
         telemetryData.addData("Motor2 Power ", driveMotors[2].getPower());
         telemetryData.addData("Motor3 Power ", driveMotors[3].getPower());
+
+        if (!inTeleop()){
+
+            switch (autoMode){
+                case UNKNOWN:
+
+                    driveMotors[0].setPower(0);
+                    driveMotors[1].setPower(0);
+                    driveMotors[2].setPower(0);
+                    driveMotors[3].setPower(0);
+
+                    break;
+
+                case TURN:
+
+                    errorAngle = angleTarget - getRobotAngle();
+
+                    correction = turnPIDController.update(errorAngle);
+
+                    driveMotors[0].setPower(correction);
+                    driveMotors[1].setPower(correction);
+                    driveMotors[2].setPower(-correction);
+                    driveMotors[3].setPower(-correction);
+
+                    break;
+
+                case STRAIGHT:
+
+
+
+                    break;
+
+            }
+
+
+
+
+
+
+        }
 
     }
 
@@ -158,6 +213,22 @@ public class Drive extends Subsystem {
         currentAngle = Double.parseDouble(imuSensor.getValue().toString());
 
         return currentAngle;
+    }
+
+    public boolean inTeleop(){
+        boolean isInTeleop;
+        int negativeOneIfNoTeleop;
+        String opMode;
+
+        //https://www.javatpoint.com/java-string-valueof Last example shows how output works with objects
+        opMode = String.valueOf(this.opMode);
+
+        //equals -1 if teleop doesn't appear in the string
+        negativeOneIfNoTeleop = opMode.indexOf("teleop");
+
+        isInTeleop = negativeOneIfNoTeleop != -1;
+
+        return isInTeleop;
     }
 
 }
