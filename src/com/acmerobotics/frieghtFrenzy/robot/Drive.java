@@ -7,6 +7,7 @@ import com.acmerobotics.robomatic.robot.Subsystem;
 import com.acmerobotics.robomatic.util.PIDController;
 import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class Drive extends Subsystem {
     public DcMotorEx omniEncoderX;
     public DcMotorEx omniEncoderY;
 
-    private CachingSensor imuSensor;
+    private CachingSensor<Float> imuSensor;
 
     private LinearOpMode opMode;
 
@@ -30,15 +31,34 @@ public class Drive extends Subsystem {
     private double errorAngle;
     private double error1;
 
+    private double distanceTarget;
+    private double distanceError;
+
+    private double headingError;
+    private double headingTarget;
+
+    //Find this value when encoders are designed on
+    private final double encoderTicksToInches = 10;
+
     private double correction;
+    private double headingCorrection;
 
     private PIDController turnPIDController;
     private PIDController headingPIDController;
+    private PIDController drivePIDController;
 
     //Tune these
-    private final double turnP = 0;
-    private final double turnI = 0;
-    private final double turnD = 0;
+    public static double turnP = 0;
+    public static double turnI = 0;
+    public static double turnD = 0;
+
+    public static double headingP = 0;
+    public static double headingI = 0;
+    public static double headingD = 0;
+
+    public static double driveP = 0;
+    public static double driveI = 0;
+    public static double driveD = 0;
 
     private enum AutoMode{
         UNKNOWN,
@@ -54,7 +74,7 @@ public class Drive extends Subsystem {
         this.opMode = opMode;
 
         BNO055IMUImpl imu = robot.getRevHubImu(0, new Robot.Orientation(Robot.Axis.POSITIVE_X, Robot.Axis.POSITIVE_Y, Robot.Axis.POSITIVE_Z));
-        imuSensor = new CachingSensor<>(() -> imu.getAngularOrientation().firstAngle);
+        imuSensor = new CachingSensor<Float>(() -> imu.getAngularOrientation().firstAngle);
         robot.registerCachingSensor(imuSensor);
 
         for (int i = 0; i < 4; i++) {
@@ -62,6 +82,13 @@ public class Drive extends Subsystem {
         }
 
         turnPIDController = new PIDController(turnP, turnI, turnD);
+        headingPIDController = new PIDController(headingP, headingI, headingD);
+        drivePIDController = new PIDController(driveP, driveI, driveD);
+
+        //Change these later if needed (headingPID will probably need a different range)
+        turnPIDController.setOutputBounds(-1,1);
+        headingPIDController.setOutputBounds(-0.5,0.5);
+        drivePIDController.setOutputBounds(-1,1);
 
     }
 
@@ -111,16 +138,23 @@ public class Drive extends Subsystem {
 
                 case STRAIGHT:
 
+                    headingError = headingTarget - getRobotAngle();
 
+                    headingCorrection = headingPIDController.update(headingError);
+
+                    //Convert encoder to inches
+                    distanceError = distanceTarget - encoderTicksToInches*omniEncoderY.getCurrentPosition();
+
+                    correction = drivePIDController.update(distanceError);
+
+                    driveMotors[0].setPower(correction+headingCorrection);
+                    driveMotors[1].setPower(correction+headingCorrection);
+                    driveMotors[2].setPower(correction-headingCorrection);
+                    driveMotors[3].setPower(correction-headingCorrection);
 
                     break;
 
             }
-
-
-
-
-
 
         }
 
@@ -161,8 +195,6 @@ public class Drive extends Subsystem {
             driveMotors[2].setPower(leftJoystickX - leftJoystickY);
             driveMotors[3].setPower(leftJoystickX - leftJoystickY);
 
-
-
     }
 
     public void setSlowModePower(double left_stick_x, double left_stick_y) {
@@ -195,6 +227,16 @@ public class Drive extends Subsystem {
 
     //Auto
 
+    public void driveStraight(double distanceInInches){
+
+        headingTarget = getRobotAngle();
+
+        distanceTarget = distanceInInches;
+
+        autoMode = AutoMode.STRAIGHT;
+
+    }
+
     public void turnLeft(double angleFromRobot){
 
 
@@ -210,7 +252,7 @@ public class Drive extends Subsystem {
     public double getRobotAngle(){
         double currentAngle;
 
-        currentAngle = Double.parseDouble(imuSensor.getValue().toString());
+        currentAngle = imuSensor.getValue();
 
         return currentAngle;
     }
@@ -229,6 +271,16 @@ public class Drive extends Subsystem {
         isInTeleop = negativeOneIfNoTeleop != -1;
 
         return isInTeleop;
+    }
+
+    public void prepareMotors(){
+
+        for(int i=0; i<4; i++ ){
+            driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            omniEncoderX.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            omniEncoderY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
     }
 
 }
