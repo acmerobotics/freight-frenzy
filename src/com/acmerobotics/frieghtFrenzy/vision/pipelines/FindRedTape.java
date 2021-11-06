@@ -19,9 +19,8 @@ import java.util.List;
 @Config
 public class FindRedTape extends Detector{
 
-    //TODO double check hue values with actual tape (remember to use dashboard configurables)
-    public static double lowerHue = 0;
-    public static double lowerSaturation = 100;
+    public static double lowerHue = -5;
+    public static double lowerSaturation = 50;
     public static double lowerValue = 100;
 
     public static double upperHue = 5;
@@ -51,6 +50,12 @@ public class FindRedTape extends Detector{
 
         // morph img
         Imgproc.dilate(img, img, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8,8)));
+        // dilating multiple times bc for some reason the pipeline will only partially detect the red tape and the contours are fragmented which
+        // harms the software's ability to find the correct largest rect so if I dilate to make all the contours on the target touch each other then
+        // they will be counted as one when looking for a rect
+        Imgproc.dilate(img, img, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8,8)));
+        Imgproc.dilate(img, img, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8,8)));
+
 
         // find contours
         Imgproc.findContours(img, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);

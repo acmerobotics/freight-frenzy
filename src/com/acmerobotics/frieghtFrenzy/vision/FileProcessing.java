@@ -53,7 +53,7 @@ public class FileProcessing implements OpModeManagerNotifier.Notifications {
         Mat imageRed = Imgcodecs.imread(captureDirectory + "/webcam-img.jpg").clone();
         Mat imageBlue = Imgcodecs.imread(captureDirectory + "/webcam-img.jpg").clone();
 
-        Log.i("CV:", imageGreen.size().toString());
+//        Log.i("CV:", imageGreen.size().toString());
 
         // convert to rgb
         Imgproc.cvtColor(imageGreen, imageGreen, Imgproc.COLOR_BGR2RGBA);

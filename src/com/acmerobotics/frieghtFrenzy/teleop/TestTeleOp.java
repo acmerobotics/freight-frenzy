@@ -7,6 +7,7 @@ import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
 import com.acmerobotics.frieghtFrenzy.vision.FileProcessing;
 import com.acmerobotics.frieghtFrenzy.vision.LocateOnBarcode;
 import com.acmerobotics.frieghtFrenzy.vision.Webcam;
+import com.acmerobotics.frieghtFrenzy.vision.pipelines.FindBlueTape;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
