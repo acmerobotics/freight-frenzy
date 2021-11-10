@@ -1,6 +1,9 @@
 package com.acmerobotics.frieghtFrenzy.robot;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.robomatic.hardware.CachingSensor;
 import com.acmerobotics.robomatic.robot.Robot;
 import com.acmerobotics.robomatic.robot.Subsystem;
@@ -10,9 +13,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.Optional;
 
+@Config
 public class Drive extends Subsystem {
+
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
     public DcMotorEx[] driveMotors = new DcMotorEx[4];
 
@@ -33,6 +42,14 @@ public class Drive extends Subsystem {
 
     private double distanceTarget;
     private double distanceError;
+
+
+
+
+   //Set up ssh
+
+
+
 
     private double headingError;
     private double headingTarget;
@@ -96,20 +113,23 @@ public class Drive extends Subsystem {
     public void update(Canvas fieldOverlay) {
 
         //Motor Positions
-        telemetryData.addData("Motor0 Position", driveMotors[0].getCurrentPosition());
-        telemetryData.addData("Motor1 Position", driveMotors[1].getCurrentPosition());
-        telemetryData.addData("Motor2 Position", driveMotors[2].getCurrentPosition());
-        telemetryData.addData("Motor3 Position", driveMotors[3].getCurrentPosition());
+        dashboardTelemetry.addData("Motor0 Position", driveMotors[0].getCurrentPosition());
+        dashboardTelemetry.addData("Motor1 Position", driveMotors[1].getCurrentPosition());
+        dashboardTelemetry.addData("Motor2 Position", driveMotors[2].getCurrentPosition());
+        dashboardTelemetry.addData("Motor3 Position", driveMotors[3].getCurrentPosition());
 
         //Omni Positions
-        telemetryData.addData("OmniX Position", omniEncoderX.getCurrentPosition());
-        telemetryData.addData("OmniY Position", omniEncoderY.getCurrentPosition());
+        dashboardTelemetry.addData("OmniX Position", omniEncoderX.getCurrentPosition());
+        dashboardTelemetry.addData("OmniY Position", omniEncoderY.getCurrentPosition());
 
         //Motor Powers
-        telemetryData.addData("Motor0 Power ", driveMotors[0].getPower());
-        telemetryData.addData("Motor1 Power ", driveMotors[1].getPower());
-        telemetryData.addData("Motor2 Power ", driveMotors[2].getPower());
-        telemetryData.addData("Motor3 Power ", driveMotors[3].getPower());
+        dashboardTelemetry.addData("Motor0 Power ", driveMotors[0].getPower());
+        dashboardTelemetry.addData("Motor1 Power ", driveMotors[1].getPower());
+        dashboardTelemetry.addData("Motor2 Power ", driveMotors[2].getPower());
+        dashboardTelemetry.addData("Motor3 Power ", driveMotors[3].getPower());
+
+        dashboardTelemetry.update();
+
 
         if (!inTeleop()){
 
@@ -159,7 +179,6 @@ public class Drive extends Subsystem {
         }
 
     }
-
 
 //TeleOp
 
@@ -233,19 +252,29 @@ public class Drive extends Subsystem {
 
         distanceTarget = distanceInInches;
 
+        autoMode = AutoMode.TURN;
+
         autoMode = AutoMode.STRAIGHT;
 
     }
 
     public void turnLeft(double angleFromRobot){
 
+        angleFromRobot = angleTarget;
 
+        autoMode = AutoMode.TURN;
+
+        autoMode = AutoMode.TURN;
 
     }
 
     public void turnRight(double angleFromRobot){
 
+        angleFromRobot = -angleTarget;
 
+        prepareMotors();
+
+        autoMode = AutoMode.TURN;
 
     }
 
