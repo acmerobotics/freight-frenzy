@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift extends Subsystem {
 
+    //TODO make pid vars changable in dashbaord without redeploying
+
     private DcMotorEx liftMotor;
     private Servo holder;
     private PIDController pidController;
