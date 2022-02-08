@@ -3,7 +3,6 @@ package com.acmerobotics.frieghtFrenzy.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.robomatic.hardware.CachingSensor;
 import com.acmerobotics.robomatic.robot.Robot;
 import com.acmerobotics.robomatic.robot.Subsystem;
@@ -12,13 +11,23 @@ import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.Optional;
 
 @Config
 public class Drive extends Subsystem {
+    //Tune these
+    public static double turnP = 0.005;
+    public static double turnI = 0;
+    public static double turnD = 0;
+
+    public static double headingP = 0.0005;
+    public static double headingI = 0;
+    public static double headingD = 0;
+
+    public static double driveP = 0.005;
+    public static double driveI = 0;
+    public static double driveD = 0;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -26,8 +35,8 @@ public class Drive extends Subsystem {
     public DcMotorEx[] driveMotors = new DcMotorEx[4];
 
     //I don't know if we are using these yet
-    public DcMotorEx omniEncoderX;
-    public DcMotorEx omniEncoderY;
+    //public DcMotorEx omniEncoderX;
+    //public DcMotorEx omniEncoderY;
 
     private CachingSensor<Float> imuSensor;
 
@@ -38,44 +47,36 @@ public class Drive extends Subsystem {
 
     private double angleTarget;
     private double errorAngle;
-    private double error1;
 
     private double distanceTarget;
     private double distanceError;
 
 
-
-
-   //Set up ssh
-
-
+    //Set up ssh
+    //Set up ssh
+    //Set up ssh
+    //Set up ssh
+    //Set up ssh
 
 
     private double headingError;
     private double headingTarget;
 
-    //Find this value when encoders are designed on
-    private final double encoderTicksToInches = 10;
+    //Find this value when encoders are decided on. These values are accurate for the 2020-2021 robot encoder setup
+    private final double wheelRadiusInches = 1.32/2;
+    private final double wheelCircumference = 2 * wheelRadiusInches * Math.PI;
+    private final double ticksPerRevolution = 8164;
+    private final double inchesPerTick = wheelCircumference/ticksPerRevolution;
 
-    private double correction;
-    private double headingCorrection;
+    public double correction;
+    public double headingCorrection;
 
+    //Turn is for just turning
+    //Heading is for heading while driving
+    //Driving is for distances
     private PIDController turnPIDController;
     private PIDController headingPIDController;
     private PIDController drivePIDController;
-
-    //Tune these
-    public static double turnP = 0;
-    public static double turnI = 0;
-    public static double turnD = 0;
-
-    public static double headingP = 0;
-    public static double headingI = 0;
-    public static double headingD = 0;
-
-    public static double driveP = 0;
-    public static double driveI = 0;
-    public static double driveD = 0;
 
     private enum AutoMode{
         UNKNOWN,
@@ -83,7 +84,7 @@ public class Drive extends Subsystem {
         STRAIGHT
     };
 
-    public AutoMode autoMode;
+    public AutoMode autoMode = AutoMode.UNKNOWN;
 
     public Drive(Robot robot, LinearOpMode opMode) {
         super("Drive");
@@ -96,7 +97,16 @@ public class Drive extends Subsystem {
 
         for (int i = 0; i < 4; i++) {
             driveMotors[i] = robot.getMotor("Motor" + i);
+            driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+
+        driveMotors[0].setDirection(DcMotorSimple.Direction.FORWARD);
+        driveMotors[1].setDirection(DcMotorSimple.Direction.FORWARD);
+        driveMotors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+        driveMotors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //omniEncoderX = robot.getMotor("omniX");
+        //omniEncoderY = robot.getMotor("omniY");
 
         turnPIDController = new PIDController(turnP, turnI, turnD);
         headingPIDController = new PIDController(headingP, headingI, headingD);
@@ -104,15 +114,17 @@ public class Drive extends Subsystem {
 
         //Change these later if needed (headingPID will probably need a different range)
         turnPIDController.setOutputBounds(-1,1);
-        headingPIDController.setOutputBounds(-0.5,0.5);
+        headingPIDController.setOutputBounds(-0.1,0.1);
         drivePIDController.setOutputBounds(-1,1);
 
     }
 
     @Override
     public void update(Canvas fieldOverlay) {
-
+/*
         //Motor Positions
+        dashboardTelemetry.addData("Is in Teleop", inTeleop());
+
         dashboardTelemetry.addData("Motor0 Position", driveMotors[0].getCurrentPosition());
         dashboardTelemetry.addData("Motor1 Position", driveMotors[1].getCurrentPosition());
         dashboardTelemetry.addData("Motor2 Position", driveMotors[2].getCurrentPosition());
@@ -129,8 +141,7 @@ public class Drive extends Subsystem {
         dashboardTelemetry.addData("Motor3 Power ", driveMotors[3].getPower());
 
         dashboardTelemetry.update();
-
-
+*/
         if (!inTeleop()){
 
             switch (autoMode){
@@ -145,25 +156,31 @@ public class Drive extends Subsystem {
 
                 case TURN:
 
-                    errorAngle = angleTarget - getRobotAngle();
+                    errorAngle = angleTarget - getAngle();
+
+                    dashboardTelemetry.addData("Angle Error",errorAngle);
 
                     correction = turnPIDController.update(errorAngle);
 
-                    driveMotors[0].setPower(correction);
-                    driveMotors[1].setPower(correction);
-                    driveMotors[2].setPower(-correction);
-                    driveMotors[3].setPower(-correction);
+                    driveMotors[0].setPower(-correction);
+                    driveMotors[1].setPower(-correction);
+                    driveMotors[2].setPower(correction);
+                    driveMotors[3].setPower(correction);
 
                     break;
 
                 case STRAIGHT:
 
-                    headingError = headingTarget - getRobotAngle();
+                    headingError = headingTarget - getAngle();
 
                     headingCorrection = headingPIDController.update(headingError);
 
                     //Convert encoder to inches
-                    distanceError = distanceTarget - encoderTicksToInches*omniEncoderY.getCurrentPosition();
+                    distanceError = distanceTarget - inchesPerTick*driveMotors[0].getCurrentPosition();
+
+                    dashboardTelemetry.addData("Heading Error",headingError);
+
+                    dashboardTelemetry.addData("Distance Error",distanceError);
 
                     correction = drivePIDController.update(distanceError);
 
@@ -175,6 +192,8 @@ public class Drive extends Subsystem {
                     break;
 
             }
+
+            dashboardTelemetry.update();
 
         }
 
@@ -207,12 +226,12 @@ public class Drive extends Subsystem {
         //Setting powers
             //Might have to switch the plus and minus
             //Left Motors
-            driveMotors[0].setPower(leftJoystickX + leftJoystickY);
-            driveMotors[1].setPower(leftJoystickX + leftJoystickY);
+            driveMotors[0].setPower(leftJoystickY + leftJoystickX);
+            driveMotors[1].setPower(leftJoystickY + leftJoystickX);
 
             //Right Motors
-            driveMotors[2].setPower(leftJoystickX - leftJoystickY);
-            driveMotors[3].setPower(leftJoystickX - leftJoystickY);
+            driveMotors[2].setPower(leftJoystickY - leftJoystickX);
+            driveMotors[3].setPower(leftJoystickY - leftJoystickX);
 
     }
 
@@ -245,14 +264,20 @@ public class Drive extends Subsystem {
     }
 
     //Auto
+    //
+    //
+    //
+    //
+    //
+    //Auto
 
     public void driveStraight(double distanceInInches){
 
-        headingTarget = getRobotAngle();
+        prepareMotors();
+
+        headingTarget = getAngle();
 
         distanceTarget = distanceInInches;
-
-        autoMode = AutoMode.TURN;
 
         autoMode = AutoMode.STRAIGHT;
 
@@ -260,17 +285,7 @@ public class Drive extends Subsystem {
 
     public void turnLeft(double angleFromRobot){
 
-        angleFromRobot = angleTarget;
-
-        autoMode = AutoMode.TURN;
-
-        autoMode = AutoMode.TURN;
-
-    }
-
-    public void turnRight(double angleFromRobot){
-
-        angleFromRobot = -angleTarget;
+        angleTarget = angleFromRobot;
 
         prepareMotors();
 
@@ -278,13 +293,25 @@ public class Drive extends Subsystem {
 
     }
 
-    public double getRobotAngle(){
+    public void turnRight(double angleFromRobot){
+
+        angleTarget = -angleFromRobot;
+
+        prepareMotors();
+
+        autoMode = AutoMode.TURN;
+
+    }
+
+    //Returns angle in degrees
+    public double getAngle(){
         double currentAngle;
 
-        currentAngle = imuSensor.getValue();
+        currentAngle = imuSensor.getValue() * 180/Math.PI;
 
         return currentAngle;
     }
+
 
     public boolean inTeleop(){
         boolean isInTeleop;
@@ -306,8 +333,11 @@ public class Drive extends Subsystem {
 
         for(int i=0; i<4; i++ ){
             driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            omniEncoderX.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            omniEncoderY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        driveMotors[0].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        for(int i=0; i<4; i++ ){
+            driveMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
     }
