@@ -13,7 +13,13 @@ public class TestAuto extends LinearOpMode {
 
         waitForStart();
 
+        robot.duckWheel.rampUp(12.57, 5); // 47.12 in circumference
+
         while(!isStopRequested()){
+
+            if(robot.duckWheel.doneRampingUp){
+                // done ramping move on to next auto step
+            }
 
             robot.update();
         }
