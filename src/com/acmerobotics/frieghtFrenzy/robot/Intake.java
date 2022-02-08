@@ -32,16 +32,16 @@ public class Intake extends Subsystem {
     public void runIntakeIn(){
 
         //Powers are also a place holder for now
-        intakeMotors[0].setPower(1);
-        intakeMotors[1].setPower(1);
+        intakeMotors[0].setPower(-0.1);
+        intakeMotors[1].setPower(-0.1);
 
     }
 
     public void runIntakeOut(){
 
         //Powers are still a place holder here too
-        intakeMotors[0].setPower(-1);
-        intakeMotors[1].setPower(-1);
+        intakeMotors[0].setPower(0.1);
+        intakeMotors[1].setPower(0.1);
 
     }
 

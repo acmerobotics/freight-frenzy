@@ -16,6 +16,14 @@ public class TestTeleOp extends LinearOpMode {
 
         while (!isStopRequested()){
 
+            if (gamepad1.a){
+                robot.intake.runIntakeIn();
+            }
+
+            if (gamepad1.b){
+                robot.intake.runIntakeOut();
+            }
+
             robot.update();
         }
     }
