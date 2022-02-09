@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.robomatic.robot.Robot;
 import com.acmerobotics.robomatic.robot.Subsystem;
+import com.acmerobotics.robomatic.util.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 public class DuckWheel extends Subsystem {
 
-    private double ticksPerRev = 520;
+    private double ticksPerRev = 537.6;
 
     private DcMotorEx duckMotor;
 
@@ -32,6 +33,10 @@ public class DuckWheel extends Subsystem {
     
     public boolean doneRampingUp = false; // if true then the duck should have been delivered so move on to the next game task
 
+    public static double P = 1.25;
+
+    PIDController pidController;
+
     
     public DuckWheel(Robot robot) { //TODO change motor direction depending on the alliance color
         super("DuckWheel");
@@ -45,6 +50,8 @@ public class DuckWheel extends Subsystem {
         duckMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         duckMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        pidController = new PIDController(P, 0, 0);
 
     }
 
@@ -62,7 +69,10 @@ public class DuckWheel extends Subsystem {
         telemetryData.addData("targetDistance (in)", ticksToInches(targetDistance));
         telemetryData.addData("currDistance (in)", getCurrPos_i());
         telemetryData.addData("currDistance (ticks)", duckMotor.getCurrentPosition());
-        
+        telemetryData.addData("currDistance calc with live time (ticks)", maxAcc * Math.pow(elapsedTime.seconds(), 2));
+        telemetryData.addData("currDistance calc with currTime (ticks)", maxAcc * Math.pow(currTime, 2));
+
+
         if (isRamping) { //TODO you figured out how to plan vel and acc but the position overshoots. Figure out how to fix that and land at the target and also track where I am supposed to be at all times
 
             currVel = maxAcc * elapsedTime.seconds();
@@ -71,8 +81,11 @@ public class DuckWheel extends Subsystem {
                 currVel = maxVel;
             }
 
+            double correction = pidController.update(currVel - duckMotor.getVelocity());
+
             setVelocity(ticksToUnits(currVel)); // convert to "units" velocity (the velocity used in setVelocity())
-            
+            // add correction to currVel, if feedback correction is desired
+
             if (duckMotor.getCurrentPosition() >= targetDistance){ //duckMotor.getVelocity() >= maxVel //TODO change to stop at target position
                 doneRampingUp = true;
                 setVelocity(0);

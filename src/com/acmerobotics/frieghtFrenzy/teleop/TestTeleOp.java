@@ -5,11 +5,8 @@ import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@Config
 @TeleOp
 public class TestTeleOp extends LinearOpMode {
-
-    public static double vel = 1;
 
     @Override
     public void runOpMode() throws InterruptedException {

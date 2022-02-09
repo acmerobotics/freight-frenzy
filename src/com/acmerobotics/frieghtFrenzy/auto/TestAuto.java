@@ -1,11 +1,17 @@
 package com.acmerobotics.frieghtFrenzy.auto;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Config
 @Autonomous
 public class TestAuto extends LinearOpMode {
+
+    public static double maxVel = 15;
+    public static double dist = 55;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -13,7 +19,7 @@ public class TestAuto extends LinearOpMode {
 
         waitForStart();
 
-        robot.duckWheel.rampUp(12.57, 5); // 47.12 in circumference
+        robot.duckWheel.rampUp(dist, maxVel); // 47.12 in circumference
 
         while(!isStopRequested()){
 
