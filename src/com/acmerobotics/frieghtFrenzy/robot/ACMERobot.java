@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class ACMERobot extends Robot {
 
-    public DuckWheel duckWheel;
+    public final DuckWheel duckWheel;
+    public final Intake intake;
 
     public ACMERobot(LinearOpMode opmode) {
         super(opmode);
@@ -13,10 +14,17 @@ public class ACMERobot extends Robot {
         registerHub("Expansion Hub 1");
         registerHub("Control Hub");
 
-
+        //Create Subsystems Here
+        intake = new Intake(this);
         duckWheel = new DuckWheel(this);
 
+
+
+        //Register Subsystems here
+        registerSubsytem(intake);
         registerSubsytem(duckWheel);
+
+
 
     }
 }
