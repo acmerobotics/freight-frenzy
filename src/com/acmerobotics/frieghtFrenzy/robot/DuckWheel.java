@@ -86,7 +86,7 @@ public class DuckWheel extends Subsystem {
             setVelocity(ticksToUnits(currVel)); // convert to "units" velocity (the velocity used in setVelocity())
             // add correction to currVel, if feedback correction is desired
 
-            if (duckMotor.getCurrentPosition() >= targetDistance){ //duckMotor.getVelocity() >= maxVel //TODO change to stop at target position
+            if (duckMotor.getCurrentPosition() >= targetDistance){ //duckMotor.getVelocity() >= maxVel
                 doneRampingUp = true;
                 setVelocity(0);
                 isRamping = false;
