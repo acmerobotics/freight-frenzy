@@ -6,7 +6,7 @@ import com.acmerobotics.robomatic.robot.Subsystem;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
+import com.acmerobotics.robomatic.robot.Robot;
 
 public class Intake extends Subsystem {
 

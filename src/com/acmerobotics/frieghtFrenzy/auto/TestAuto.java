@@ -2,15 +2,15 @@ package com.acmerobotics.frieghtFrenzy.auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
+import com.acmerobotics.frieghtFrenzy.robot.Drive;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Config
-@Autonomous
+
+@Autonomous(name = "Test Auto")
 public class TestAuto extends LinearOpMode {
 
-    public static double maxVel = 15;
-    public static double dist = 55;
+    boolean isPerformingAutoCommand = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -19,16 +19,63 @@ public class TestAuto extends LinearOpMode {
 
         waitForStart();
 
-        robot.duckWheel.rampUp(dist, maxVel); // 47.12 in circumference
-
         while(!isStopRequested()){
 
-            if(robot.duckWheel.doneRampingUp){
-                // done ramping move on to next auto step
+            robot.update();
+
+            telemetry.addData("Drive P", Drive.driveP);
+            telemetry.addData("Auto Mode", robot.drive.autoMode);
+            telemetry.addData("InTeleop", robot.drive.inTeleop());
+            telemetry.addData("Motor Speed", robot.drive.driveMotors[0].getPower());
+            telemetry.addData("Correction", robot.drive.correction);
+            telemetry.addData("Heading Correction", robot.drive.headingCorrection);
+            telemetry.addData("Current Angle",robot.drive.getAngle());
+
+            //
+            if (gamepad1.dpad_up && !isPerformingAutoCommand) {
+
+                robot.drive.driveStraight(40);
+
+                telemetry.addData("Up button hit", true);
+
+                isPerformingAutoCommand = true;
+
+            } else {
+
+                isPerformingAutoCommand = false;
+
+                telemetry.addData("Up button hit", false);
+
             }
 
-            robot.update();
-        }
+            //
+            if (gamepad1.dpad_right && !isPerformingAutoCommand) {
 
+                isPerformingAutoCommand = true;
+
+                robot.drive.turnRight(90);
+
+            } else {
+
+                isPerformingAutoCommand = false;
+
+            }
+
+            //
+            if (gamepad1.dpad_left && !isPerformingAutoCommand) {
+
+                isPerformingAutoCommand = true;
+
+                robot.drive.turnLeft(90);
+
+            } else {
+
+                isPerformingAutoCommand = false;
+
+            }
+
+            telemetry.update();
+
+        }
     }
 }
