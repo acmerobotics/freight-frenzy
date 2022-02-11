@@ -11,7 +11,6 @@ public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        StickyGamepad stickyGamepad = new StickyGamepad(gamepad1);
 
         ACMERobot robot = new ACMERobot(this);
 
@@ -19,15 +18,6 @@ public class TeleOp extends LinearOpMode {
 
         while (!isStopRequested()){
 
-            if (stickyGamepad.a){
-                robot.freightScorer.score();
-            }
-
-            if (stickyGamepad.b){
-                robot.freightScorer.rest();
-            }
-
-            robot.update();
         }
     }
 }

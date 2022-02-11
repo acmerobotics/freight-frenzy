@@ -1,6 +1,7 @@
 package com.acmerobotics.frieghtFrenzy.robot;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.robomatic.robot.Robot;
 import com.acmerobotics.robomatic.robot.Subsystem;
 import com.acmerobotics.robomatic.util.PIDController;
@@ -8,12 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 public class Lift extends Subsystem {
 
     private DcMotorEx liftMotor;
     private PIDController pidController;
 
-    public static double P = 0;
+    public static double P = 1;
     public static double I = 0;
     public static double D = 0;
 
@@ -36,14 +38,20 @@ public class Lift extends Subsystem {
 
     @Override
     public void update(Canvas fieldOverlay) {
-        telemetryData.addData("current position", liftMotor.getCurrentPosition());
-        telemetryData.addData("target position", liftMotor.getCurrentPosition());
 
         error = target - liftMotor.getCurrentPosition();
 
         double correction = pidController.update(error);
 
         liftMotor.setPower(correction);
+
+        telemetryData.addData("current position", liftMotor.getCurrentPosition());
+        telemetryData.addData("target position", target);
+
+        telemetryData.addData("power", liftMotor.getPower());
+
+        telemetryData.addData("correction", correction);
+        telemetryData.addData("error", error);
     }
 
     public void score(){
@@ -62,5 +70,9 @@ public class Lift extends Subsystem {
         else{
             return false;
         }
+    }
+
+    public void setPower(double power){
+        liftMotor.setPower(power);
     }
 }
