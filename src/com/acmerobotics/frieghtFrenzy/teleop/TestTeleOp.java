@@ -15,8 +15,6 @@ public class TestTeleOp extends LinearOpMode {
 
         ACMERobot robot = new ACMERobot(this);
 
-        StickyGamepad stickyGamepad = new StickyGamepad(gamepad1);
-
         robot.update();
 
         telemetry.addData("InTeleop", robot.drive.inTeleop());
@@ -29,7 +27,7 @@ public class TestTeleOp extends LinearOpMode {
 
             robot.update();
 
-            if (stickyGamepad.left_stick_button){
+            if (gamepad1.right_bumper){
                 isSlowMode = true;
             } else {
                 isSlowMode = false;
@@ -37,13 +35,17 @@ public class TestTeleOp extends LinearOpMode {
 
             if (isSlowMode){
 
-                robot.drive.setSlowModePower(gamepad1.left_stick_x, gamepad1.left_stick_y);
+                robot.drive.setSlowModePower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+                telemetry.addData("Slow Mode", "On");
 
             } else {
 
-                robot.drive.setPower(gamepad1.left_stick_x, gamepad1.left_stick_y);
+                robot.drive.setPower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+                telemetry.addData("Slow Mode", "Off");
 
             }
+
+            telemetry.update();
 
         }
     }
