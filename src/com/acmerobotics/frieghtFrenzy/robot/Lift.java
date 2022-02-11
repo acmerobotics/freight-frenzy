@@ -10,76 +10,57 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift extends Subsystem {
 
-    //TODO make pid vars changable in dashbaord without redeploying
-
     private DcMotorEx liftMotor;
-    private Servo holder;
     private PIDController pidController;
 
-    public static double P;
-    public static double I;
-    public static double D;
+    public static double P = 0;
+    public static double I = 0;
+    public static double D = 0;
 
     private double error = 0;
     private double target = 0;
 
-    public static double raisedPos = 0;
-    public static double openPos = 0;
-    public static double closePos = 0;
-
-    private static double openHolderPos = 0;
-
-    private enum LiftMode{
-        UNKNOWN,
-        FEEDBACK
-    }
+    public static double restPosition = 0;
+    public static double scorePosition = 250;
 
     public Lift(Robot robot) {
-        super("Lift");
+        super("freightScorer");
 
         liftMotor = robot.getMotor("liftMotor");
-        holder = robot.getServo("liftHolder");
         pidController = new PIDController(P, I, D);
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
     public void update(Canvas fieldOverlay) {
-        telemetryData.addData("current lift position", liftMotor.getCurrentPosition());
-        telemetryData.addData("current holder position", holder.getPosition());
+        telemetryData.addData("current position", liftMotor.getCurrentPosition());
+        telemetryData.addData("target position", liftMotor.getCurrentPosition());
 
         error = target - liftMotor.getCurrentPosition();
 
-        double correction = pidController.update(error); // NOT in ticks per sec, need to convert
+        double correction = pidController.update(error);
 
-        liftMotor.setVelocity(correction); // set a velocity in ticks per sec
-
-        if (liftMotor.getCurrentPosition() > openHolderPos){ // when the lift passes the openHolderPos then it is safe to open the holder
-            setHolderPosition(openPos);
-        }
-        else{
-            setHolderPosition(closePos); // when the lift goes lower then the openHolderPos then close the holder
-        }
-
+        liftMotor.setPower(correction);
     }
 
     public void score(){
-        setPosition(raisedPos);
+        target = scorePosition;
     }
 
-    public void getReadyToReceive(){
-        setPosition(0);
+    public void rest(){
+        target = restPosition;
     }
 
+    public boolean atPosition(){
+        if (liftMotor.getCurrentPosition() >= target){
+            return true;
+        }
 
-    private void setPosition(double position){
-        target = position;
+        else{
+            return false;
+        }
     }
-
-    private void setHolderPosition(double position){
-        holder.setPosition(position);
-    }
-
 }
