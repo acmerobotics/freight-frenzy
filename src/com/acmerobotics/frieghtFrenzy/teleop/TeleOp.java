@@ -63,11 +63,18 @@ public class TeleOp extends LinearOpMode {
 
             // duck wheel
             if (gamepad1.right_trigger > 0.1){ //TODO test this. it might be better to use rampUp()
-                robot.duckWheel.setPower(gamepad1.right_trigger);
-                // or robot.duckWheel.setVelocity(gamepad1.right_trigger * 30);
+//                robot.duckWheel.setPower(gamepad1.right_trigger);
+                 robot.duckWheel.setVelocity(gamepad1.right_trigger * 30);
+            }
+            else{
+                robot.duckWheel.setVelocity(0);
             }
 
+            if (stickyGamepad.right_bumper){
+                robot.duckWheel.rampUp(55, 20);
+            }
 
+            stickyGamepad.update();
             robot.update();
         }
     }
