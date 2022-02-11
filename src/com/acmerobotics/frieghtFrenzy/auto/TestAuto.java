@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous
 public class TestAuto extends LinearOpMode {
 
-    public static double maxVel = 15;
+    public static double maxVel = 20;
     public static double dist = 55;
 
     @Override

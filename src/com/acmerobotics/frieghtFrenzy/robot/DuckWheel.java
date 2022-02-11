@@ -57,6 +57,7 @@ public class DuckWheel extends Subsystem {
 
     @Override
     public void update(Canvas fieldOverlay) {
+        telemetryData.addData("maxAcc", maxAcc);
         telemetryData.addData("maxVel", maxVel);
         telemetryData.addData("currVel", duckMotor.getVelocity());
         telemetryData.addData("currVel calculated", currVel); // curr vel
@@ -109,14 +110,14 @@ public class DuckWheel extends Subsystem {
     }
 
     public void rampUp(double distance_i, double maxVel_u){ // distance in inches
-        // linearly accelerate the wheel to prevent it from falling from jerk (place the duck near the center to reduce centrifugal force)
+        // linearly accelerate the wheel to prevent it from falling from jerk
 
         targetDistance = inchesToTicks(distance_i);
         this.maxVel = unitsToTicks(maxVel_u);
 
-        totalTime = targetDistance / maxVel; // totalAccTime
+        totalTime = 2 * targetDistance / maxVel; // totalAccTime
 
-        maxAcc = Math.hypot(maxVel, totalTime);
+        maxAcc = maxVel / totalTime;
         
         isRamping = true;
 
