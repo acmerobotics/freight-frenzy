@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class TeleOp extends LinearOpMode {
 
     private boolean intaking = false;
-    private boolean delivering = false;
     private boolean reversing = false;
 
     @Override
@@ -66,13 +65,13 @@ public class TeleOp extends LinearOpMode {
 
 
             // duck wheel
-            if (gamepad1.right_trigger > 0.1){ //TODO test this. it might be better to use rampUp()
-//                robot.duckWheel.setPower(gamepad1.right_trigger);
-                 robot.duckWheel.setVelocity(gamepad1.right_trigger * 30);
-            }
-            else{
-                robot.duckWheel.setVelocity(0);
-            }
+//            if (gamepad1.right_trigger > 0.1){
+////                robot.duckWheel.setPower(gamepad1.right_trigger);
+//                 robot.duckWheel.setVelocity(gamepad1.right_trigger * 30);
+//            }
+//            else{
+//                robot.duckWheel.setVelocity(0);
+//            }
 
             if (stickyGamepad.right_bumper){
                 robot.duckWheel.rampUp(55, 20);

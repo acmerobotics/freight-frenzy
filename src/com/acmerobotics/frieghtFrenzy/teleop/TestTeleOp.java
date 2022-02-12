@@ -30,7 +30,6 @@ public class TestTeleOp extends LinearOpMode {
             }
 
             if (stickyGamepad.a){
-                robot.freightScorer.score();
             }
 
             if (stickyGamepad.b){
