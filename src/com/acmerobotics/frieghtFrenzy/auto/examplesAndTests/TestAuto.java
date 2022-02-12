@@ -1,4 +1,4 @@
-package com.acmerobotics.frieghtFrenzy.auto;
+package com.acmerobotics.frieghtFrenzy.auto.examplesAndTests;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
@@ -6,8 +6,8 @@ import com.acmerobotics.frieghtFrenzy.robot.Drive;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+//@Autonomous(name = "Test Auto")
 
-@Autonomous(name = "Test Auto")
 public class TestAuto extends LinearOpMode {
 
     boolean isPerformingAutoCommand = false;

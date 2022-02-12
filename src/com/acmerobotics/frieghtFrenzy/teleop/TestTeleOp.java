@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //@TeleOp
 public class TestTeleOp extends LinearOpMode {
 
+    boolean isSlowMode = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -19,25 +21,26 @@ public class TestTeleOp extends LinearOpMode {
 
         while (!isStopRequested()){
 
-            if(gamepad1.right_trigger > 0.1){
-                robot.freightScorer.setPower(gamepad1.right_trigger / 3);
-            }
-            if(gamepad1.left_trigger > 0.1){
-                robot.freightScorer.setPower(gamepad1.left_trigger / -3);
-            }
-            if (gamepad1.left_trigger < 0.1 & gamepad1.right_trigger < 0.1){
-                robot.freightScorer.setPower(0);
+            if (gamepad1.right_bumper){
+                isSlowMode = true;
+            } else {
+                isSlowMode = false;
             }
 
-            if (stickyGamepad.a){
-            }
+            if (isSlowMode){
 
-            if (stickyGamepad.b){
-                robot.freightScorer.rest();
+                robot.drive.setSlowModePower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+                telemetry.addData("Slow Mode", "On");
+
+            } else {
+
+                robot.drive.setPower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+                telemetry.addData("Slow Mode", "Off");
             }
 
             stickyGamepad.update();
             robot.update();
+
         }
     }
 }
