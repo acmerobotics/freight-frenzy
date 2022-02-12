@@ -10,6 +10,7 @@ public class TeleOp extends LinearOpMode {
 
     private boolean intaking = false;
     private boolean delivering = false;
+    private boolean reversing = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,6 +32,7 @@ public class TeleOp extends LinearOpMode {
                 intaking = !intaking;
 
                 if (intaking){
+                    reversing = false;
                     robot.intake.runIntakeIn();
                 }
                 else{
@@ -38,27 +40,28 @@ public class TeleOp extends LinearOpMode {
                 }
             }
 
-            if (gamepad1.left_trigger > 0.1){
-                intaking = false;
-                robot.intake.runIntakeOut();
-            }
-            else{
-                if (!intaking){
+            if (stickyGamepad.left_bumper){
+                reversing = !reversing;
+
+                if (reversing) {
+                    intaking = false;
+                    robot.intake.runIntakeOut();
+                }
+                else {
                     robot.intake.stopIntake();
                 }
             }
 
 
             // arm
-            if (stickyGamepad.b){
-                delivering = !delivering;
-
-                if (delivering){
-                    // move arm to delver freight to hub
-                }
-                else{
-                    // move arm to rest position
-                }
+            if(gamepad1.right_trigger > 0.1){
+                robot.freightScorer.setPower(gamepad1.right_trigger / 3); // go to score
+            }
+            if(gamepad1.left_trigger > 0.1){
+                robot.freightScorer.setPower(gamepad1.left_trigger / -3); // go to rest
+            }
+            if (gamepad1.left_trigger < 0.1 & gamepad1.right_trigger < 0.1){ // stop
+                robot.freightScorer.setPower(0);
             }
 
 

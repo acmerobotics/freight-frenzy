@@ -20,7 +20,13 @@ public class TestTeleOp extends LinearOpMode {
         while (!isStopRequested()){
 
             if(gamepad1.right_trigger > 0.1){
-                robot.freightScorer.setPower(gamepad1.right_trigger);
+                robot.freightScorer.setPower(gamepad1.right_trigger / 3);
+            }
+            if(gamepad1.left_trigger > 0.1){
+                robot.freightScorer.setPower(gamepad1.left_trigger / -3);
+            }
+            if (gamepad1.left_trigger < 0.1 & gamepad1.right_trigger < 0.1){
+                robot.freightScorer.setPower(0);
             }
 
             if (stickyGamepad.a){
