@@ -1,12 +1,17 @@
 package com.acmerobotics.frieghtFrenzy.robot;
 
+import android.app.LauncherActivity;
+
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.robomatic.robot.Robot;
 import com.acmerobotics.robomatic.robot.Subsystem;
 import com.acmerobotics.robomatic.util.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
@@ -37,8 +42,7 @@ public class DuckWheel extends Subsystem {
 
     PIDController pidController;
 
-    
-    public DuckWheel(Robot robot) { //TODO change motor direction depending on the alliance color (red is forward blue is backward)
+    public DuckWheel(Robot robot) {
         super("DuckWheel");
 
         elapsedTime = new ElapsedTime();
@@ -109,8 +113,15 @@ public class DuckWheel extends Subsystem {
         return ticksToInches(duckMotor.getCurrentPosition());
     }
 
-    public void rampUp(double distance_i, double maxVel_u){ // distance in inches
+    public void rampUp(double distance_i, double maxVel_u, String color){ // distance in inches
         // linearly accelerate the wheel to prevent it from falling from jerk
+
+        if (color.equals("red")){
+            duckMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+        else {
+            duckMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
 
         targetDistance = inchesToTicks(distance_i) + duckMotor.getCurrentPosition();
         this.maxVel = unitsToTicks(maxVel_u);
