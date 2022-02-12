@@ -17,17 +17,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Drive extends Subsystem {
     //Tune these
-    public static double turnP = 0.01;
-    public static double turnI = 0.001;
-    public static double turnD = 0.001;
+    public static double turnP = 0.025;
+    public static double turnI = 0.0045;
+    public static double turnD = 0.003;
 
-    public static double headingP = 0.005;
-    public static double headingI = 0;
-    public static double headingD = 0;
+    public static double headingP = 0.02;
+    public static double headingI = 0.001;
+    public static double headingD = 0.001;
 
-    public static double driveP = 0.01;
-    public static double driveI = 0;
-    public static double driveD = 0;
+    public static double driveP = 0.03;
+    public static double driveI = 0.0045;
+    public static double driveD = 0.002;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -49,7 +49,7 @@ public class Drive extends Subsystem {
     private double errorAngle;
 
     private double globalAngle;
-    public double lastAngle;
+    private double lastAngle;
 
     private double distanceTarget;
     private double distanceError;
@@ -57,9 +57,9 @@ public class Drive extends Subsystem {
     private double headingError;
     private double headingTarget;
 
-    //Find this value when encoders are decided on. These values are accurate for the 2020-2021 robot encoder setup
-    private final double wheelRadiusInches = 3.9/2;
-    private final double wheelCircumference = 2 * wheelRadiusInches * Math.PI;
+    //These values are accurate for the robot as of the first tournament
+    private final double wheelDiameterInches = 4;
+    private final double wheelCircumference = wheelDiameterInches * Math.PI;
     private final double ticksPerRevolutionOfMotorShaft = 560;
     private final double inchesPerTick = wheelCircumference/ticksPerRevolutionOfMotorShaft;
 
@@ -336,7 +336,11 @@ public class Drive extends Subsystem {
     }
 
     public boolean atTargetDistance(){
-        return (distanceError > -1) && (distanceError < 1);
+        if((distanceError > -1) && (distanceError < 1)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean atTargetAngle(){

@@ -7,9 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.checkerframework.checker.signature.qual.DotSeparatedIdentifiers;
 
-@Disabled
 @Autonomous(name = "autoClassStructure", group = "examples")
-class autoClassStructure extends LinearOpMode {
+public class autoClassStructure extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
