@@ -8,6 +8,8 @@ public class ACMERobot extends Robot {
     public final DuckWheel duckWheel;
     public final Intake intake;
     public final Drive drive;
+    public final Lift freightScorer;
+
 
     public ACMERobot(LinearOpMode opMode) {
         super(opMode);
@@ -19,6 +21,8 @@ public class ACMERobot extends Robot {
         intake = new Intake(this);
         duckWheel = new DuckWheel(this);
         drive = new Drive(this, opMode);
+        freightScorer = new Lift(this);
+
 
 
 
@@ -26,6 +30,7 @@ public class ACMERobot extends Robot {
         registerSubsytem(intake);
         registerSubsytem(duckWheel);
         registerSubsytem(drive);
+        registerSubsytem(freightScorer);
 
     }
 }

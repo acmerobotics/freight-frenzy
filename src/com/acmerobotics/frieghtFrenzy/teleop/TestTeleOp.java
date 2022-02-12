@@ -9,55 +9,30 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class TestTeleOp extends LinearOpMode {
 
-    private boolean isSlowMode = false;
-
     @Override
     public void runOpMode() throws InterruptedException {
 
-        ACMERobot robot = new ACMERobot(this);
-
         StickyGamepad stickyGamepad = new StickyGamepad(gamepad1);
-
-        robot.update();
-
-        telemetry.addData("InTeleop", robot.drive.inTeleop());
-
-        telemetry.update();
+        ACMERobot robot = new ACMERobot(this);
 
         waitForStart();
 
         while (!isStopRequested()){
 
-            if (gamepad1.right_trigger > 0.1){
-                robot.duckWheel.setVelocity(gamepad1.right_trigger * 30);
+            if(gamepad1.right_trigger > 0.1){
+                robot.freightScorer.setPower(gamepad1.right_trigger);
             }
 
-            else{
-                robot.duckWheel.setVelocity(0);
+            if (stickyGamepad.a){
+                robot.freightScorer.score();
             }
 
+            if (stickyGamepad.b){
+                robot.freightScorer.rest();
+            }
 
-//            robot.duckWheel.setVelocity(vel);
-
-
+            stickyGamepad.update();
             robot.update();
-
-            if (stickyGamepad.left_stick_button){
-                isSlowMode = true;
-            } else {
-                isSlowMode = false;
-            }
-
-            if (isSlowMode){
-
-                robot.drive.setSlowModePower(gamepad1.left_stick_x, gamepad1.left_stick_y);
-
-            } else {
-
-                robot.drive.setPower(gamepad1.left_stick_x, gamepad1.left_stick_y);
-
-            }
-
         }
     }
 }
