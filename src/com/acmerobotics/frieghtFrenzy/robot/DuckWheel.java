@@ -135,6 +135,11 @@ public class DuckWheel extends Subsystem {
         elapsedTime.reset();
 
     }
+
+    public void stop(){
+        isRamping = false;
+        setVelocity(0);
+    }
     
     private double ticksToInches(double ticks){
         double cir = 4 * 3.14;

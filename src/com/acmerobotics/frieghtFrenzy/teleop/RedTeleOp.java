@@ -23,7 +23,7 @@ public class RedTeleOp extends LinearOpMode {
         while (!isStopRequested()){
 
             // drive
-            robot.drive.setPower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+            robot.drive.setPower(gamepad1.right_stick_x, -gamepad1.left_stick_y);
 
 
             // intake
@@ -66,7 +66,11 @@ public class RedTeleOp extends LinearOpMode {
 
             // duck wheel
             if (stickyGamepad.right_bumper){
-                robot.duckWheel.rampUp(55, 20, "red");
+                robot.duckWheel.rampUp(60, 25, "red");
+            }
+
+            if (stickyGamepad.b){
+                robot.duckWheel.stop();
             }
 
             stickyGamepad.update();

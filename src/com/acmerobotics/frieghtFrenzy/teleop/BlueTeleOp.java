@@ -10,6 +10,7 @@ public class BlueTeleOp extends LinearOpMode {
 
     private boolean intaking = false;
     private boolean reversing = false;
+    private boolean slowMode = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -23,7 +24,7 @@ public class BlueTeleOp extends LinearOpMode {
         while (!isStopRequested()){
 
             // drive
-            robot.drive.setPower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+            robot.drive.setPower(gamepad1.right_stick_x, -gamepad1.left_stick_y);
 
 
             // intake
@@ -65,7 +66,11 @@ public class BlueTeleOp extends LinearOpMode {
 
             // duck wheel
             if (stickyGamepad.right_bumper){
-                robot.duckWheel.rampUp(55, 20, "blue");
+                robot.duckWheel.rampUp(60, 25, "blue");
+            }
+
+            if (stickyGamepad.b){
+                robot.duckWheel.stop();
             }
 
             stickyGamepad.update();
