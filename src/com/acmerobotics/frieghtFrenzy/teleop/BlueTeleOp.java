@@ -3,12 +3,14 @@ package com.acmerobotics.frieghtFrenzy.teleop;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
 import com.acmerobotics.robomatic.util.StickyGamepad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//@com.qualcomm.robotcore.eventloop.opmode.TeleOp
-public class TeleOp extends LinearOpMode {
+@TeleOp
+public class BlueTeleOp extends LinearOpMode {
 
     private boolean intaking = false;
     private boolean reversing = false;
+    private boolean slowMode = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -22,7 +24,7 @@ public class TeleOp extends LinearOpMode {
         while (!isStopRequested()){
 
             // drive
-            robot.drive.setPower(gamepad1.right_stick_x, gamepad1.left_stick_y);
+            robot.drive.setPower(gamepad1.right_stick_x, -gamepad1.left_stick_y);
 
 
             // intake
@@ -62,18 +64,13 @@ public class TeleOp extends LinearOpMode {
                 robot.freightScorer.setPower(0);
             }
 
-
             // duck wheel
-//            if (gamepad1.right_trigger > 0.1){
-////                robot.duckWheel.setPower(gamepad1.right_trigger);
-//                 robot.duckWheel.setVelocity(gamepad1.right_trigger * 30);
-//            }
-//            else{
-//                robot.duckWheel.setVelocity(0);
-//            }
-
             if (stickyGamepad.right_bumper){
-//                robot.duckWheel.rampUp(55, 20);
+                robot.duckWheel.rampUp(60, 25, "blue");
+            }
+
+            if (stickyGamepad.b){
+                robot.duckWheel.stop();
             }
 
             stickyGamepad.update();
