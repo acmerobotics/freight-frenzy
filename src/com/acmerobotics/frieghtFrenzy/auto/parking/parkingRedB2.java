@@ -28,14 +28,14 @@ public class parkingRedB2 extends LinearOpMode {
 
                     robot.drive.driveStraight(20);
                     robot.update();
-                    numberCase=1;
+                    numberCase = 1;
                     nextCase = 2;
 
                     break;
 
                 case 1:
                     robot.update();
-                    if (robot.drive.atTargetDistance()){
+                    if (robot.drive.atTargetDistance()) {
                         numberCase = nextCase;
                     }
                     break;
@@ -47,9 +47,9 @@ public class parkingRedB2 extends LinearOpMode {
 
                     break;
                 case 3:
-                    robot.drive.driveStraight(84);
-                    nextCase=4;
-                    numberCase=1;
+                    robot.drive.driveStraight(48);
+                    nextCase = 4;
+                    numberCase = 1;
                     break;
                 case 4:
                     robot.drive.stopDrive();
@@ -57,12 +57,11 @@ public class parkingRedB2 extends LinearOpMode {
                     break;
                 case 5:
                     robot.update();
-                    if (robot.drive.atTargetAngle()){
+                    if (robot.drive.atTargetAngle()) {
                         numberCase = nextCase;
                     }
 
-                }
-
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ public class parkingBlueA2 extends LinearOpMode {
 
                     break;
                 case 3:
-                    robot.drive.driveStraight(48);
+                    robot.drive.driveStraight(84);
                     nextCase = 4;
                     numberCase = 1;
                     break;

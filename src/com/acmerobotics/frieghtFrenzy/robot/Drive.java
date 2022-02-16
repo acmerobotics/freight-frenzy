@@ -49,7 +49,7 @@ public class Drive extends Subsystem {
     private double errorAngle;
 
     private double globalAngle;
-    private double lastAngle;
+    private double lastAngle = 0;
 
     private double distanceTarget;
     private double distanceError;
@@ -319,7 +319,11 @@ public class Drive extends Subsystem {
     public double getAngle(){
         double currentAngle;
 
-        currentAngle = imuSensor.getValue() * 180/Math.PI;
+        if (imuSensor.getValue() != null) {
+            currentAngle = imuSensor.getValue() * 180 / Math.PI;
+        } else {
+            currentAngle = lastAngle;
+        }
 
         double deltaAngle = currentAngle - lastAngle;
 

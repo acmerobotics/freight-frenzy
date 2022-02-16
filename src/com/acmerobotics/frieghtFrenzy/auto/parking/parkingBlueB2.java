@@ -19,6 +19,7 @@ public class parkingBlueB2 extends LinearOpMode {
 
         ACMERobot robot = new ACMERobot(this);
 
+
         waitForStart();
 
         while(!isStopRequested()) {
@@ -47,7 +48,7 @@ public class parkingBlueB2 extends LinearOpMode {
 
                     break;
                 case 3:
-                    robot.drive.driveStraight(84);
+                    robot.drive.driveStraight(48);
                     nextCase = 4;
                     numberCase = 1;
                     break;
