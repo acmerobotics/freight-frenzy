@@ -78,7 +78,7 @@ public class DuckWheel extends Subsystem {
         telemetryData.addData("currDistance calc with currTime (ticks)", maxAcc * Math.pow(currTime, 2));
 
 
-        if (isRamping) { //TODO you figured out how to plan vel and acc but the position overshoots. Figure out how to fix that and land at the target and also track where I am supposed to be at all times
+        if (isRamping) {
 
             currVel = maxAcc * elapsedTime.seconds();
 

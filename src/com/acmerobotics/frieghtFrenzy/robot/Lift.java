@@ -22,11 +22,11 @@ public class Lift extends Subsystem {
 
     private double target = 0;
 
-    public static double restPosition = 30;
+    public static double restPosition = 5;
 
-    public static double top = 500;
-    public static double mid = 550;
-    public static double low = 650;
+    public static double top = 475;
+    public static double mid = 575;
+    public static double low = 675;
 
     // 500 top
     // 550 mid
@@ -87,7 +87,7 @@ public class Lift extends Subsystem {
     }
 
     public boolean atPosition(){
-        if (liftMotor.getCurrentPosition() >= target){
+        if (liftMotor.getCurrentPosition() == target){
             goToPosition = false;
             return true;
         }

@@ -6,10 +6,8 @@ import com.acmerobotics.robomatic.util.StickyGamepad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//@TeleOp
+@TeleOp
 public class TestTeleOp extends LinearOpMode {
-
-    boolean isSlowMode = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,21 +19,20 @@ public class TestTeleOp extends LinearOpMode {
 
         while (!isStopRequested()){
 
-            if (gamepad1.right_bumper){
-                isSlowMode = true;
-            } else {
-                isSlowMode = false;
+            if (stickyGamepad.y){
+                robot.freightScorer.scoreTop();
             }
 
-            if (isSlowMode){
+            if (stickyGamepad.b){
+                robot.freightScorer.scoreMiddle();
+            }
 
-                robot.drive.setSlowModePower(gamepad1.right_stick_x, gamepad1.left_stick_y);
-                telemetry.addData("Slow Mode", "On");
+            if (stickyGamepad.a){
+                robot.freightScorer.scoreLow();
+            }
 
-            } else {
-
-                robot.drive.setPower(gamepad1.right_stick_x, gamepad1.left_stick_y);
-                telemetry.addData("Slow Mode", "Off");
+            if (stickyGamepad.x){
+                robot.freightScorer.rest();
             }
 
             stickyGamepad.update();
