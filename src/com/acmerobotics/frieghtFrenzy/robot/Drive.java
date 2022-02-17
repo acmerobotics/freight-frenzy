@@ -16,6 +16,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
 public class Drive extends Subsystem {
+
+    public Canvas canvas = new Canvas();
+
     //Tune these
     public static double turnP = 0.025;
     public static double turnI = 0.0045;
@@ -283,6 +286,8 @@ public class Drive extends Subsystem {
 
         autoMode = AutoMode.STRAIGHT;
 
+        update(canvas);
+
     }
 
     public void turnLeft(double angleFromRobot){
@@ -295,6 +300,8 @@ public class Drive extends Subsystem {
 
         autoMode = AutoMode.TURN;
 
+        update(canvas);
+
     }
 
     public void turnRight(double angleFromRobot){
@@ -306,6 +313,8 @@ public class Drive extends Subsystem {
         prepareMotors();
 
         autoMode = AutoMode.TURN;
+
+        update(canvas);
 
     }
 
@@ -349,6 +358,17 @@ public class Drive extends Subsystem {
 
     public boolean atTargetAngle(){
         return (errorAngle > -0.5) && (errorAngle < 0.5);
+    }
+
+    public boolean atTarget() {
+
+        if(autoMode == AutoMode.STRAIGHT) {
+            return (distanceError > -1) && (distanceError < 1);
+        } else if (autoMode == AutoMode.TURN) {
+            return (errorAngle > -0.5) && (errorAngle < 0.5);
+        } else {
+            return false;
+        }
     }
 
     public void stopDrive(){

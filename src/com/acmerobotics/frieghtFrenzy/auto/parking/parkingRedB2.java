@@ -13,55 +13,22 @@ public class parkingRedB2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        int numberCase = 0;
-        int nextCase = 2;
-
 
         ACMERobot robot = new ACMERobot(this);
 
         waitForStart();
 
-        while(!isStopRequested()) {
-            robot.update();
-            switch (numberCase) {
-                case 0:
 
                     robot.drive.driveStraight(20);
-                    robot.update();
-                    numberCase = 1;
-                    nextCase = 2;
+        robot.runUntil(robot.drive::atTarget);
 
-                    break;
-
-                case 1:
-                    robot.update();
-                    if (robot.drive.atTargetDistance()) {
-                        numberCase = nextCase;
-                    }
-                    break;
-
-                case 2:
                     robot.drive.turnRight(90);
-                    nextCase = 3;
-                    numberCase = 5;
+        robot.runUntil(robot.drive::atTarget);
 
-                    break;
-                case 3:
                     robot.drive.driveStraight(48);
-                    nextCase = 4;
-                    numberCase = 1;
-                    break;
-                case 4:
+        robot.runUntil(robot.drive::atTarget);
+
                     robot.drive.stopDrive();
 
-                    break;
-                case 5:
-                    robot.update();
-                    if (robot.drive.atTargetAngle()) {
-                        numberCase = nextCase;
-                    }
-
-            }
-        }
     }
 }

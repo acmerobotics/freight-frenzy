@@ -13,56 +13,23 @@ public class parkingBlueB2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        int numberCase = 0;
-        int nextCase = 2;
-
 
         ACMERobot robot = new ACMERobot(this);
 
-
         waitForStart();
 
-        while(!isStopRequested()) {
-            robot.update();
-            switch (numberCase) {
-                case 0:
+                robot.drive.driveStraight(26);
+                robot.runUntil(robot.drive::atTarget);
 
-                    robot.drive.driveStraight(26);
-                    robot.update();
-                    numberCase = 1;
-                    nextCase = 2;
 
-                    break;
+                robot.drive.turnLeft(90);
+                robot.runUntil(robot.drive::atTarget);
 
-                case 1:
-                    robot.update();
-                    if (robot.drive.atTargetDistance()) {
-                        numberCase = nextCase;
-                    }
-                    break;
+                robot.drive.driveStraight(48);
+                robot.runUntil(robot.drive::atTarget);
 
-                case 2:
-                    robot.drive.turnLeft(90);
-                    nextCase = 3;
-                    numberCase = 5;
+        robot.drive.stopDrive();
 
-                    break;
-                case 3:
-                    robot.drive.driveStraight(48);
-                    nextCase = 4;
-                    numberCase = 1;
-                    break;
-                case 4:
-                    robot.drive.stopDrive();
 
-                    break;
-                case 5:
-                    robot.update();
-                    if (robot.drive.atTargetAngle()) {
-                        numberCase = nextCase;
-                    }
-
-            }
-        }
     }
 }
