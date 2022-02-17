@@ -40,6 +40,8 @@ public class Lift extends Subsystem {
         liftMotor = robot.getMotor("liftMotor");
         pidController = new PIDController(P, I, D);
 
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
