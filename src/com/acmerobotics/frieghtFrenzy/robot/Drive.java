@@ -283,15 +283,15 @@ public class Drive extends Subsystem {
 
     public void driveStraight(double distanceInInches){
 
-        autoMode = AutoMode.STRAIGHT;
-
         prepareMotors();
 
-        headingTarget = getAngle();
+        autoMode = AutoMode.STRAIGHT;
 
         distanceTarget = distanceInInches;
 
         distanceError = distanceTarget - inchesPerTick*driveMotors[0].getCurrentPosition();
+
+        headingTarget = getAngle();
 
         update(canvas);
 
