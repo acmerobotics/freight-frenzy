@@ -148,6 +148,11 @@ public class Drive extends Subsystem {
             telemetryData.addData("Motor " + i + " Position", inchesPerTick*driveMotors[i].getCurrentPosition());
         }
 
+
+        telemetryData.addData("Angle Error", errorAngle);
+        telemetryData.addData("Distance Error", distanceError);
+
+
         telemetryData.addData("Correction", correction);
         telemetryData.addData("Heading", getAngle());
 
@@ -278,13 +283,15 @@ public class Drive extends Subsystem {
 
     public void driveStraight(double distanceInInches){
 
+        autoMode = AutoMode.STRAIGHT;
+
         prepareMotors();
 
         headingTarget = getAngle();
 
         distanceTarget = distanceInInches;
 
-        autoMode = AutoMode.STRAIGHT;
+        distanceError = distanceTarget - inchesPerTick*driveMotors[0].getCurrentPosition();
 
         update(canvas);
 
@@ -292,13 +299,13 @@ public class Drive extends Subsystem {
 
     public void turnLeft(double angleFromRobot){
 
+        autoMode = AutoMode.TURN;
+
         resetAngle();
 
         angleTarget = angleFromRobot;
 
         prepareMotors();
-
-        autoMode = AutoMode.TURN;
 
         update(canvas);
 
@@ -306,13 +313,13 @@ public class Drive extends Subsystem {
 
     public void turnRight(double angleFromRobot){
 
+        autoMode = AutoMode.TURN;
+
         resetAngle();
 
         angleTarget = -angleFromRobot;
 
         prepareMotors();
-
-        autoMode = AutoMode.TURN;
 
         update(canvas);
 

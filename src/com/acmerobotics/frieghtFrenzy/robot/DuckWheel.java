@@ -158,4 +158,8 @@ public class DuckWheel extends Subsystem {
     private double ticksToUnits(double ticks){ // used to convert ticks/sec velocity to units/sec velocity so it can be sent to setVelocity()
         return ticks * 30 / 2680;
     }
+
+    public boolean isRampingUpCompleted(){
+        return doneRampingUp;
+    }
 }
