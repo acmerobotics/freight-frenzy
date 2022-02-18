@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class TestTeleOp extends LinearOpMode {
 
+    private boolean intaking = false;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -19,6 +22,8 @@ public class TestTeleOp extends LinearOpMode {
 
         while (!isStopRequested()){
 
+            robot.drive.setPower(gamepad1.right_stick_x, -gamepad1.left_stick_y);
+
             if (stickyGamepad.y){
                 robot.freightScorer.scoreTop();
             }
@@ -27,12 +32,20 @@ public class TestTeleOp extends LinearOpMode {
                 robot.freightScorer.scoreMiddle();
             }
 
-            if (stickyGamepad.a){
-                robot.freightScorer.scoreLow();
-            }
-
             if (stickyGamepad.x){
                 robot.freightScorer.rest();
+            }
+
+            ///////////////////////////////////////
+            if (stickyGamepad.a){
+                intaking = !intaking;
+
+                if (intaking){
+                    robot.intake.runIntakeIn();
+                }
+                else{
+                    robot.intake.stopIntake();
+                }
             }
 
             stickyGamepad.update();
