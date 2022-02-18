@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.checkerframework.checker.units.qual.A;
 
 @Autonomous(group = "duckAndPark")
-public class duckParkRedA3 extends LinearOpMode {
+public class duckParkRedA2 extends LinearOpMode {
 
 
     @Override
@@ -36,6 +36,12 @@ public class duckParkRedA3 extends LinearOpMode {
         robot.runUntil(robot.duckWheel::isRampingUpCompleted);
 
         robot.drive.driveStraight(24);
+        robot.runUntil(robot.drive::atTarget);
+
+        robot.drive.turnRight(90);
+        robot.runUntil(robot.drive::atTarget);
+
+        robot.drive.driveStraight(110);
         robot.runUntil(robot.drive::atTarget);
 
         robot.drive.stopDrive();
