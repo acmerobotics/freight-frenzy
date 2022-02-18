@@ -7,28 +7,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(group = "parking")
-public class parkingRedB2 extends LinearOpMode {
+public class parkingBlueA3 extends LinearOpMode {
 
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-
         ACMERobot robot = new ACMERobot(this);
 
         waitForStart();
 
-
-                    robot.drive.driveStraight(20);
-        robot.runUntil(robot.drive::atTarget);
+                    robot.drive.driveStraight(28);
+                    robot.runUntil(robot.drive::atTarget);
 
                     robot.drive.turnRight(90);
-        robot.runUntil(robot.drive::atTarget);
+                    robot.runUntil(robot.drive::atTarget);
 
-                    robot.drive.driveStraight(48);
-        robot.runUntil(robot.drive::atTarget);
+                    robot.drive.driveStraight(36);
+                    robot.runUntil(robot.drive::atTarget);
 
-                    robot.drive.stopDrive();
+        robot.drive.stopDrive();
+
+
 
     }
 }
