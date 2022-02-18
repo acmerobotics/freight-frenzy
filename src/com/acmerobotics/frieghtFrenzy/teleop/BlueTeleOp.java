@@ -66,7 +66,7 @@ public class BlueTeleOp extends LinearOpMode {
 
             // duck wheel
             if (stickyGamepad.right_bumper){
-                robot.duckWheel.rampUp(60, 25, "blue");
+                robot.duckWheel.rampUp("blue");
             }
 
             if (stickyGamepad.b){

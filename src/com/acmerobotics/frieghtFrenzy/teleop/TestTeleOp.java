@@ -48,6 +48,10 @@ public class TestTeleOp extends LinearOpMode {
                 }
             }
 
+            if (stickyGamepad.right_bumper){
+                robot.duckWheel.continuous("red");
+            }
+
             stickyGamepad.update();
             robot.update();
 

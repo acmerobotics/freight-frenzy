@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static java.lang.Thread.sleep;
+
 @Config
 public class DuckWheel extends Subsystem {
 
@@ -38,9 +40,18 @@ public class DuckWheel extends Subsystem {
     
     public boolean doneRampingUp = false; // if true then the duck should have been delivered so move on to the next game task
 
+    private boolean atPosition = false;
+
+    public static double delay = 1.5;
+
     public static double P = 1.25;
 
     PIDController pidController;
+
+    public static double distance_i = 60;
+    public static double maxVel_u = 25;
+
+    private boolean isContinuous = false;
 
     public DuckWheel(Robot robot) {
         super("DuckWheel");
@@ -77,6 +88,8 @@ public class DuckWheel extends Subsystem {
         telemetryData.addData("currDistance calc with live time (ticks)", maxAcc * Math.pow(elapsedTime.seconds(), 2));
         telemetryData.addData("currDistance calc with currTime (ticks)", maxAcc * Math.pow(currTime, 2));
 
+        telemetryData.addData("atPosition", atPosition);
+
 
         if (isRamping) {
 
@@ -96,6 +109,17 @@ public class DuckWheel extends Subsystem {
                 setVelocity(0);
                 isRamping = false;
                 currTime = elapsedTime.seconds();
+                atPosition = true;
+                duckMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                duckMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+
+        if (isContinuous){
+            if (atPosition){
+                if ((currTime + delay) <= elapsedTime.seconds()){
+                    continuous("red"); // set an instance field that has its value set inside of continuous
+                }
             }
         }
     }
@@ -113,7 +137,7 @@ public class DuckWheel extends Subsystem {
         return ticksToInches(duckMotor.getCurrentPosition());
     }
 
-    public void rampUp(double distance_i, double maxVel_u, String color){ // distance in inches
+    public void rampUp(String color){ // distance in inches
         // linearly accelerate the wheel to prevent it from falling from jerk
 
         if (color.equals("red")){
@@ -123,7 +147,7 @@ public class DuckWheel extends Subsystem {
             duckMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        targetDistance = inchesToTicks(distance_i) + duckMotor.getCurrentPosition();
+        targetDistance = inchesToTicks(distance_i);
         this.maxVel = unitsToTicks(maxVel_u);
 
         totalTime = 2 * targetDistance / maxVel; // totalAccTime
@@ -134,6 +158,12 @@ public class DuckWheel extends Subsystem {
 
         elapsedTime.reset();
 
+    }
+
+    public void continuous(String color){
+        atPosition = false;
+        rampUp(color);
+        isContinuous = true;
     }
 
     public void stop(){
