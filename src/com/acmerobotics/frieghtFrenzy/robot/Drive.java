@@ -76,6 +76,11 @@ public class Drive extends Subsystem {
     private PIDController headingPIDController;
     private PIDController drivePIDController;
 
+    public boolean hasBeenRun = false;
+
+    public double encoderPosition = 0;
+    public double lastEncoderPosition = 0;
+
     private enum AutoMode{
         UNKNOWN,
         TURN,
@@ -148,6 +153,15 @@ public class Drive extends Subsystem {
             telemetryData.addData("Motor " + i + " Position", inchesPerTick*driveMotors[i].getCurrentPosition());
         }
 
+        telemetryData.addData("Auto Mode",autoMode);
+
+
+        telemetryData.addData("Angle Error", errorAngle);
+        telemetryData.addData("Distance Error", distanceError);
+
+        telemetryData.addData("Heading Target", headingTarget);
+        telemetryData.addData("Angle Target", angleTarget);
+
         telemetryData.addData("Correction", correction);
         telemetryData.addData("Heading", getAngle());
 
@@ -187,13 +201,14 @@ public class Drive extends Subsystem {
                     //Convert encoder to inches
                     distanceError = distanceTarget - inchesPerTick*driveMotors[0].getCurrentPosition();
 
-
                     correction = drivePIDController.update(distanceError);
 
                     driveMotors[0].setPower(correction+headingCorrection);
                     driveMotors[1].setPower(correction+headingCorrection);
                     driveMotors[2].setPower(correction-headingCorrection);
                     driveMotors[3].setPower(correction-headingCorrection);
+
+                    hasBeenRun = true;
 
                     break;
 
@@ -278,13 +293,19 @@ public class Drive extends Subsystem {
 
     public void driveStraight(double distanceInInches){
 
-        prepareMotors();
+        telemetryData.addData("Driving forward this many inches", distanceInInches);
 
-        headingTarget = getAngle();
+        hasBeenRun = false;
+
+        prepareMotors();
 
         distanceTarget = distanceInInches;
 
+        distanceError = distanceTarget; // - inchesPerTick*driveMotors[0].getCurrentPosition();
+
         autoMode = AutoMode.STRAIGHT;
+
+        headingTarget = getAngle();
 
         update(canvas);
 
@@ -292,13 +313,15 @@ public class Drive extends Subsystem {
 
     public void turnLeft(double angleFromRobot){
 
+        turnPIDController.reset();
+
+        autoMode = AutoMode.TURN;
+
         resetAngle();
 
         angleTarget = angleFromRobot;
 
         prepareMotors();
-
-        autoMode = AutoMode.TURN;
 
         update(canvas);
 
@@ -306,17 +329,36 @@ public class Drive extends Subsystem {
 
     public void turnRight(double angleFromRobot){
 
+        turnPIDController.reset();
+
+        autoMode = AutoMode.TURN;
+
         resetAngle();
 
         angleTarget = -angleFromRobot;
 
         prepareMotors();
 
-        autoMode = AutoMode.TURN;
-
         update(canvas);
 
     }
+
+/*
+    public void resetEncoders(){
+        encoderPosition = 0;
+    }
+
+    public double getEncoderPosition(){
+        double currentPosition;
+
+        currentPosition = driveMotors[0].getCurrentPosition();
+
+        double deltaPosition = currentPosition - lastEncoderPosition;
+
+        encoderPosition += deltaPosition;
+
+        return encoderPosition;
+    } */
 
     public void resetAngle(){
 
@@ -349,7 +391,7 @@ public class Drive extends Subsystem {
     }
 
     public boolean atTargetDistance(){
-        if((distanceError > -1) && (distanceError < 1)) {
+        if((distanceError > -1) && (distanceError < 1) && (hasBeenRun)) {
             return true;
         } else {
             return false;
@@ -394,14 +436,10 @@ public class Drive extends Subsystem {
 
     public void prepareMotors(){
 
-        for(int i=0; i<4; i++ ){
-            driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
         driveMotors[0].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        for(int i=0; i<4; i++ ){
-            driveMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+        driveMotors[0].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
 
 
