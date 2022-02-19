@@ -199,8 +199,7 @@ public class Drive extends Subsystem {
                     headingCorrection = headingPIDController.update(headingError);
 
                     //Convert encoder to inches
-                    distanceError = distanceTarget - inchesPerTick*getEncoderPosition()    /*driveMotors[0].getCurrentPosition()*/;
-
+                    distanceError = distanceTarget - inchesPerTick*driveMotors[0].getCurrentPosition();
 
                     correction = drivePIDController.update(distanceError);
 
@@ -294,8 +293,6 @@ public class Drive extends Subsystem {
 
     public void driveStraight(double distanceInInches){
 
-        resetEncoders();
-
         telemetryData.addData("Driving forward this many inches", distanceInInches);
 
         hasBeenRun = false;
@@ -346,7 +343,7 @@ public class Drive extends Subsystem {
 
     }
 
-
+/*
     public void resetEncoders(){
         encoderPosition = 0;
     }
@@ -361,7 +358,7 @@ public class Drive extends Subsystem {
         encoderPosition += deltaPosition;
 
         return encoderPosition;
-    }
+    } */
 
     public void resetAngle(){
 

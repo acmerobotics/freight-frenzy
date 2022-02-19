@@ -17,7 +17,7 @@ public class duckParkRedA3 extends LinearOpMode {
 
         waitForStart();
 
-        robot.drive.driveStraight(24);
+        robot.drive.driveStraight(25);
         robot.runUntil(robot.drive::atTargetDistance);
 
         robot.drive.turnRight(90);
@@ -35,7 +35,7 @@ public class duckParkRedA3 extends LinearOpMode {
         robot.duckWheel.rampUp(60, 25, "red");
         robot.runUntil(robot.duckWheel::isRampingUpCompleted);
 
-        robot.drive.driveStraight(24);
+        robot.drive.driveStraight(23);
         robot.runUntil(robot.drive::atTarget);
 
         robot.drive.stopDrive();
