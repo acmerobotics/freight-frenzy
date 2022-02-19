@@ -55,7 +55,7 @@ public class duckParkRedA3StateMachine extends LinearOpMode {
 
                 case 5:
 
-                    robot.duckWheel.rampUp(60, 25, "red");
+                    robot.duckWheel.rampUp( "red");
                     autoCase = 10;
                     break;
 

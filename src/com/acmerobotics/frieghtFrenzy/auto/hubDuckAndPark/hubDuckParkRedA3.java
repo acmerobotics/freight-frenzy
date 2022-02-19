@@ -1,4 +1,4 @@
-package com.acmerobotics.frieghtFrenzy.auto.duckAndPark;
+package com.acmerobotics.frieghtFrenzy.auto.hubDuckAndPark;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.frieghtFrenzy.robot.ACMERobot;
@@ -9,8 +9,9 @@ import org.checkerframework.checker.units.qual.A;
 
 @Config
 @Autonomous(group = "duckAndPark")
-public class duckParkRedA3Time extends LinearOpMode {
+public class hubDuckParkRedA3 extends LinearOpMode {
 
+    //Make d1 and t1 longer to reach the hub
     public static double distance1 = 24;
     public static double distance2 = -28;
     public static double distance3 = -12;
@@ -33,6 +34,8 @@ public class duckParkRedA3Time extends LinearOpMode {
 
         robot.drive.turnRight(90);
         robot.runUntil(robot.drive::atTargetAngle);
+
+        //Right here is where we are next to the hub facing away from it
 
         robot.drive.driveStraight(distance2);
         robot.runForTime((long)time2);
