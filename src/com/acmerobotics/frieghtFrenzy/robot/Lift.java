@@ -24,6 +24,8 @@ public class Lift extends Subsystem {
 
     public static double restPosition = 5;
 
+    public static double errorTorrance = 2;
+
     public static double top = 510;
     public static double mid = 575;
     public static double low = 675;
@@ -89,7 +91,7 @@ public class Lift extends Subsystem {
     }
 
     public boolean atPosition(){ // if at curr pos then use rest to make sure the block falls after 1 second
-        if (liftMotor.getCurrentPosition() == target){
+        if (Math.abs(target - liftMotor.getCurrentPosition()) < errorTorrance){
             goToPosition = false;
             return true;
         }

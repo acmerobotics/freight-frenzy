@@ -12,12 +12,12 @@ import org.checkerframework.checker.units.qual.A;
 public class hubDuckParkRedA3 extends LinearOpMode {
 
     //Make d1 and t1 longer to reach the hub
-    public static double distance1 = 30;
-    public static double distance2 = -28;
-    public static double distance3 = -18;
+    public static double distance1 = 42;
+    public static double distance2 = 24;
+    public static double distance3 = -36;
     public static double distance4 = 28;
 
-    public static double time1 = 3000;
+    public static double time1 = 3500;
     public static double time2 = 2000;
     public static double time3 = 3000;
     public static double time4 = 2000;
@@ -32,8 +32,10 @@ public class hubDuckParkRedA3 extends LinearOpMode {
         robot.drive.driveStraight(distance1);
         robot.runForTime((long)time1);
 
-        robot.drive.turnRight(90);
+        robot.drive.turnLeft(90);
         robot.runUntil(robot.drive::atTargetAngle);
+
+        robot.drive.stopDrive();
 
         //Right here is where we are next to the hub facing away from it
         robot.freightScorer.scoreTop();
@@ -45,7 +47,7 @@ public class hubDuckParkRedA3 extends LinearOpMode {
         robot.drive.driveStraight(distance2);
         robot.runForTime((long)time2);
 
-        robot.drive.turnLeft(90);
+        robot.drive.turnRight(90);
         robot.runUntil(robot.drive::atTargetAngle);
 
         robot.drive.driveStraight(distance3);
